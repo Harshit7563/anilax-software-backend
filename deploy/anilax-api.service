@@ -9,6 +9,7 @@ Group=www-data
 WorkingDirectory=/var/www/anilax-software-backend
 EnvironmentFile=/var/www/anilax-software-backend/.env
 Environment=NODE_ENV=production
+Environment=API_PORT=3002
 ExecStart=/usr/bin/node server/index.js
 Restart=on-failure
 RestartSec=5

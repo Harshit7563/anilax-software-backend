@@ -34,7 +34,7 @@ fi
 cat > .env <<ENVFILE
 NODE_ENV=production
 API_HOST=127.0.0.1
-API_PORT=3001
+API_PORT=3002
 DATABASE_URL=postgresql://anilax_app:${DB_PASSWORD}@127.0.0.1:5432/anilax_software
 ADMIN_PASSWORD=${ADMIN_PASSWORD}
 ${CORS_LINE}
