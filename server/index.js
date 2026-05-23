@@ -11,15 +11,27 @@ const HOST =
   process.env.API_HOST ?? (process.env.NODE_ENV === "production" ? "0.0.0.0" : "127.0.0.1");
 const isProd = process.env.NODE_ENV === "production";
 
-const allowedOrigins = (process.env.CORS_ORIGINS ?? "http://localhost:5173,http://localhost:5175")
-  .split(",")
-  .map((o) => o.trim())
-  .filter(Boolean);
+const allowedOrigins = new Set(
+  (process.env.CORS_ORIGINS ?? "http://localhost:5173,http://localhost:5175")
+    .split(",")
+    .map((o) => o.trim())
+    .filter(Boolean),
+);
+
+// Always allow same-site production hosts when DOMAIN is set
+const domain = process.env.DOMAIN?.trim();
+if (domain) {
+  for (const proto of ["https", "http"]) {
+    allowedOrigins.add(`${proto}://${domain}`);
+    allowedOrigins.add(`${proto}://www.${domain}`);
+  }
+  allowedOrigins.add(`http://72.61.227.154`);
+}
 
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin) || (isProd && !origin)) {
+      if (!origin || allowedOrigins.has(origin)) {
         callback(null, true);
         return;
       }
