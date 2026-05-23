@@ -1,0 +1,8 @@
+{
+  "framework": "express",
+  "installCommand": "npm ci",
+  "buildCommand": "npm run build",
+  "startCommand": "npm start",
+  "entryFile": "server/index.js",
+  "nodeVersion": "22"
+}

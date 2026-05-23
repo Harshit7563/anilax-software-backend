@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "build": "node -e \"console.log('Express API — no build step')\"",
     "db:setup": "bash database/setup.sh",
     "dev": "node server/index.js",
     "start": "NODE_ENV=production node server/index.js"

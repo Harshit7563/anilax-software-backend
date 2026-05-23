@@ -5,8 +5,10 @@ import { healthCheck, query } from "./db.js";
 import { adminRouter } from "./routes/admin.js";
 
 const app = express();
-const PORT = Number(process.env.API_PORT ?? 3001);
-const HOST = process.env.API_HOST ?? "127.0.0.1";
+// Hostinger sets PORT; local dev uses API_PORT
+const PORT = Number(process.env.PORT ?? process.env.API_PORT ?? 3001);
+const HOST =
+  process.env.API_HOST ?? (process.env.NODE_ENV === "production" ? "0.0.0.0" : "127.0.0.1");
 const isProd = process.env.NODE_ENV === "production";
 
 const allowedOrigins = (process.env.CORS_ORIGINS ?? "http://localhost:5173,http://localhost:5175")
