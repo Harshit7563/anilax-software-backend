@@ -29,4 +29,4 @@ Admin API: `/api/admin/*` (used by design app at `/admin`)
 npm start
 ```
 
-See `deploy/HOSTINGER-VPS.md` for VPS deploy.
+**Production (VPS):** `deploy/HOSTINGER-VPS.md` — one-command bootstrap on Hostinger VPS.

@@ -46,7 +46,9 @@ if [[ -d "$DESIGN_DIR" && -f "$DESIGN_DIR/package.json" ]]; then
   cd "$DESIGN_DIR" && npm ci && npm run build
 fi
 
-sed "s|/var/www/anilax-software/anilax-software-backend|$BACKEND_DIR|g" "$BACKEND_DIR/deploy/anilax-api.service" > /etc/systemd/system/anilax-api.service
+cp "$BACKEND_DIR/deploy/anilax-api.service" /etc/systemd/system/anilax-api.service
+chown www-data:www-data "$BACKEND_DIR/.env"
+chown -R www-data:www-data "$BACKEND_DIR" "$DESIGN_DIR"
 systemctl daemon-reload
 systemctl enable anilax-api
 systemctl restart anilax-api
