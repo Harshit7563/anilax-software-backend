@@ -2,6 +2,8 @@
 
 Express + PostgreSQL: contact leads, partner signups, admin API.
 
+**GitHub:** https://github.com/Harshit7563/anilax-software-backend
+
 ## Setup
 
 ```bash

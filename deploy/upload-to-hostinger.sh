@@ -1,34 +1,15 @@
 #!/usr/bin/env bash
-# Run FROM YOUR MAC — uploads full repo (design + backend) to Hostinger VPS
-#
-# Usage:
-#   export VPS_HOST=root@YOUR_VPS_IP
-#   export DOMAIN=anilaxsoftware.com
-#   bash anilax-software-backend/deploy/upload-to-hostinger.sh
-#
+# Upload backend repo to VPS
 set -euo pipefail
-
-: "${VPS_HOST:?Set VPS_HOST — example: export VPS_HOST=root@123.45.67.89}"
+: "${VPS_HOST:?export VPS_HOST=root@YOUR_IP}"
 DOMAIN="${DOMAIN:-}"
-
+BACKEND_DIR="${BACKEND_DIR:-/var/www/anilax-software-backend}"
+DESIGN_DIR="${DESIGN_DIR:-/var/www/anilax-software-design}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-REMOTE_DIR="/var/www/anilax-software"
-
-echo "→ Uploading repo to ${VPS_HOST}:${REMOTE_DIR}"
-
-ssh "$VPS_HOST" "mkdir -p ${REMOTE_DIR}"
+LOCAL_BACKEND="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 rsync -avz --delete \
-  --exclude node_modules \
-  --exclude .git \
-  --exclude .env \
-  --exclude dist \
-  --exclude ".DS_Store" \
-  "$REPO_ROOT/" "${VPS_HOST}:${REMOTE_DIR}/"
+  --exclude node_modules --exclude .env --exclude .git \
+  "$LOCAL_BACKEND/" "${VPS_HOST}:${BACKEND_DIR}/"
 
-echo "→ Running server install…"
-ssh "$VPS_HOST" "chmod +x ${REMOTE_DIR}/anilax-software-backend/deploy/*.sh && DOMAIN='${DOMAIN}' bash ${REMOTE_DIR}/anilax-software-backend/deploy/vps-first-install.sh"
-
-echo ""
-echo "Done. Open https://${DOMAIN:-YOUR_DOMAIN} when DNS is ready."
+ssh "$VPS_HOST" "BACKEND_DIR='${BACKEND_DIR}' DESIGN_DIR='${DESIGN_DIR}' DOMAIN='${DOMAIN}' bash ${BACKEND_DIR}/deploy/vps-first-install.sh"
