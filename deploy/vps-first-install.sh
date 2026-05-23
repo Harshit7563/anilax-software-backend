@@ -27,7 +27,9 @@ cd "$BACKEND_DIR"
 bash deploy/setup-postgres.sh
 
 CORS_LINE=""
-[[ -n "$DOMAIN" ]] && CORS_LINE="CORS_ORIGINS=https://${DOMAIN},https://www.${DOMAIN}"
+if [[ -n "$DOMAIN" ]]; then
+  CORS_LINE="CORS_ORIGINS=https://${DOMAIN},https://www.${DOMAIN},http://${DOMAIN},http://www.${DOMAIN},http://72.61.227.154"
+fi
 
 cat > .env <<ENVFILE
 NODE_ENV=production
