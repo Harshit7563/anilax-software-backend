@@ -29,6 +29,9 @@ if [[ "$(id -u)" -ne 0 ]]; then
   exit 1
 fi
 
+git config --global --add safe.directory "$BACKEND_DIR" 2>/dev/null || true
+git config --global --add safe.directory "$DESIGN_DIR" 2>/dev/null || true
+
 echo "→ Clone repositories (public HTTPS, no login)…"
 mkdir -p /var/www
 git_clone_public "$GITHUB_BACKEND" "$BACKEND_DIR"
