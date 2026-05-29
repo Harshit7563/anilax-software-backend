@@ -6,6 +6,7 @@ set -euo pipefail
 BACKEND_DIR="${BACKEND_DIR:-/var/www/anilax-software-backend}"
 DESIGN_DIR="${DESIGN_DIR:-/var/www/anilax-software-design}"
 DOMAIN="${DOMAIN:-}"
+VPS_IP="${VPS_IP:-72.61.227.154}"
 DB_PASSWORD="${DB_PASSWORD:-}"
 ADMIN_PASSWORD="${ADMIN_PASSWORD:-}"
 
@@ -27,12 +28,15 @@ cd "$BACKEND_DIR"
 bash deploy/setup-postgres.sh
 
 CORS_LINE=""
+DOMAIN_LINE=""
 if [[ -n "$DOMAIN" ]]; then
-  CORS_LINE="CORS_ORIGINS=https://${DOMAIN},https://www.${DOMAIN},http://${DOMAIN},http://www.${DOMAIN},http://72.61.227.154"
+  DOMAIN_LINE="DOMAIN=${DOMAIN}"
+  CORS_LINE="CORS_ORIGINS=https://${DOMAIN},https://www.${DOMAIN},http://${DOMAIN},http://www.${DOMAIN},http://${VPS_IP}"
 fi
 
 cat > .env <<ENVFILE
 NODE_ENV=production
+${DOMAIN_LINE}
 API_HOST=127.0.0.1
 API_PORT=3002
 DATABASE_URL=postgresql://anilax_app:${DB_PASSWORD}@127.0.0.1:5432/anilax_software
@@ -62,10 +66,12 @@ if [[ -n "$DOMAIN" && -d "$DESIGN_DIR/dist" ]]; then
   ln -sf /etc/nginx/sites-available/anilax-software /etc/nginx/sites-enabled/
   rm -f /etc/nginx/sites-enabled/default
   nginx -t && systemctl reload nginx
-  certbot --nginx -d "$DOMAIN" -d "www.$DOMAIN" --non-interactive --agree-tos -m "admin@${DOMAIN}" 2>/dev/null || true
+  if ! certbot --nginx -d "$DOMAIN" -d "www.$DOMAIN" --non-interactive --agree-tos -m "admin@${DOMAIN}" --redirect; then
+    echo "WARN: SSL certificate was not issued. Check that ${DOMAIN} and www.${DOMAIN} point to ${VPS_IP}, then rerun deploy/vps-fix-live-domain.sh."
+  fi
 fi
 
 echo "✓ Backend: $BACKEND_DIR"
 echo "  Admin password: $ADMIN_PASSWORD"
-curl -s http://127.0.0.1:3001/api/health || true
+curl -s http://127.0.0.1:3002/api/health || true
 echo ""
