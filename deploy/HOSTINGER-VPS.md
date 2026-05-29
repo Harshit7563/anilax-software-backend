@@ -173,6 +173,20 @@ Run karne se pehle DNS check:
 
 ---
 
+## Admin password reset
+
+Agar `/admin/login` par password accept nahi ho raha, VPS par password reset karo:
+
+```bash
+cd /var/www/anilax-software-backend
+git pull origin main
+ADMIN_PASSWORD='NewStrongAdminPassword123!' bash deploy/vps-reset-admin-password.sh
+```
+
+Script `.env` me `ADMIN_PASSWORD` update karega, `anilax-api` restart karega, aur local login endpoint verify karega.
+
+---
+
 ## Hostinger Node.js site band karo
 
 Agar pehle `anilaxsoftware.com` Node hosting par tha:
@@ -190,6 +204,7 @@ Agar pehle `anilaxsoftware.com` Node hosting par tha:
 | DB error | `.env` `DATABASE_URL` · `systemctl status postgresql` |
 | CORS | `CORS_ORIGINS` mein exact `https://` URL |
 | SSL name mismatch / browser API unreachable | DNS `@`/`www` ko VPS par point karo, wrong `AAAA` remove karo, phir `deploy/vps-fix-live-domain.sh` run karo |
+| Admin password invalid | `ADMIN_PASSWORD='new-password' bash deploy/vps-reset-admin-password.sh` |
 | Blank React routes | Nginx `try_files` → `index.html` |
 
 ---
