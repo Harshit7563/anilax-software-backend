@@ -30,3 +30,6 @@ npm start
 ```
 
 **Production (VPS):** `deploy/HOSTINGER-VPS.md` — one-command bootstrap on Hostinger VPS.
+
+If the live Connect With Us form says it cannot reach the API, run the VPS
+repair flow in `deploy/HOSTINGER-VPS.md#live-domain--connect-with-us-api-fix`.
