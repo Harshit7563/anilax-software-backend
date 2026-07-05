@@ -3,6 +3,8 @@ import express from "express";
 import cors from "cors";
 import { healthCheck, query } from "./db.js";
 import { adminRouter } from "./routes/admin.js";
+import { blogRouter } from "./routes/blog.js";
+import shreeChatRouter from "./shree-chat.route.js";
 
 const app = express();
 // Hostinger sets PORT; local dev uses API_PORT
@@ -26,6 +28,15 @@ if (domain) {
     allowedOrigins.add(`${proto}://www.${domain}`);
   }
   allowedOrigins.add(`http://72.61.227.154`);
+}
+
+for (const o of [
+  "https://localhost",
+  "http://localhost",
+  "capacitor://localhost",
+  "ionic://localhost",
+]) {
+  allowedOrigins.add(o);
 }
 
 app.use(
@@ -93,6 +104,8 @@ app.post("/api/contact-leads", async (req, res) => {
 });
 
 app.use("/api/admin", adminRouter);
+app.use("/api/blog", blogRouter);
+app.use("/api/shree", shreeChatRouter);
 
 app.post("/api/partner-signups", async (req, res) => {
   try {

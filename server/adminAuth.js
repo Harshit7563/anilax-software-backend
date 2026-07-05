@@ -7,7 +7,7 @@ function getSecret() {
   if (!secret) {
     throw new Error("ADMIN_PASSWORD or ADMIN_SECRET must be set for admin access");
   }
-  return secret;
+  return secret.trim();
 }
 
 function b64url(buf) {
@@ -26,6 +26,7 @@ function fromB64url(str) {
 export function createAdminToken() {
   const payload = {
     role: "admin",
+    username: (process.env.ADMIN_USERNAME || "Bawji").trim(),
     exp: Date.now() + SESSION_HOURS * 60 * 60 * 1000,
   };
   const data = b64url(JSON.stringify(payload));
@@ -52,11 +53,18 @@ export function verifyAdminToken(token) {
 }
 
 export function checkAdminPassword(password) {
-  const expected = process.env.ADMIN_PASSWORD;
+  const expected = process.env.ADMIN_PASSWORD?.trim();
   if (!expected) return false;
   if (!password || typeof password !== "string") return false;
-  if (password.length !== expected.length) return false;
-  return crypto.timingSafeEqual(Buffer.from(password), Buffer.from(expected));
+  const given = password.trim();
+  if (given.length !== expected.length) return false;
+  return crypto.timingSafeEqual(Buffer.from(given), Buffer.from(expected));
+}
+
+export function verifyAdminCredentials(username, password) {
+  const expectedUser = (process.env.ADMIN_USERNAME || "Bawji").trim();
+  if (!checkAdminPassword(password)) return false;
+  return String(username ?? "").trim() === expectedUser;
 }
 
 export function requireAdmin(req, res, next) {

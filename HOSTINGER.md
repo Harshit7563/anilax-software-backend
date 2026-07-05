@@ -51,7 +51,11 @@ Add: **`api`** → `api.anilaxsoftware.com`
 | `NODE_ENV` | `production` |
 | `DATABASE_URL` | Supabase URI (step 2) |
 | `CORS_ORIGINS` | `https://anilaxsoftware.com,https://www.anilaxsoftware.com` |
+| `DOMAIN` | `anilaxsoftware.com` |
+| `ADMIN_USERNAME` | `Bawji` |
 | `ADMIN_PASSWORD` | Strong secret (admin login) |
+| `GEMINI_API_KEY` | Google AI Studio key (Shree AI) |
+| `GEMINI_MODEL` | `gemini-2.0-flash` (optional) |
 
 `PORT` Hostinger khud set karta hai — mat likho.
 

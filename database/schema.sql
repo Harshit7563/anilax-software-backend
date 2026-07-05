@@ -40,6 +40,26 @@ CREATE TABLE IF NOT EXISTS partner_signups (
 CREATE INDEX IF NOT EXISTS idx_partner_signups_created_at ON partner_signups (created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_partner_signups_email ON partner_signups (email);
 
+-- Blog posts (admin-managed + public API)
+CREATE TABLE IF NOT EXISTS blog_posts (
+  slug VARCHAR(200) PRIMARY KEY,
+  title VARCHAR(500) NOT NULL,
+  excerpt TEXT NOT NULL,
+  category VARCHAR(64) NOT NULL,
+  date DATE NOT NULL DEFAULT CURRENT_DATE,
+  read_minutes INT NOT NULL DEFAULT 5,
+  author VARCHAR(200) NOT NULL DEFAULT 'Anilax Team',
+  tags JSONB NOT NULL DEFAULT '[]'::jsonb,
+  sections JSONB NOT NULL DEFAULT '[]'::jsonb,
+  related_slugs JSONB NOT NULL DEFAULT '[]'::jsonb,
+  software_id VARCHAR(64),
+  source VARCHAR(32) NOT NULL DEFAULT 'admin',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_blog_posts_date ON blog_posts (date DESC);
+
 -- Auto-update updated_at on contact_leads
 CREATE OR REPLACE FUNCTION set_updated_at()
 RETURNS TRIGGER AS $$
@@ -52,5 +72,11 @@ $$ LANGUAGE plpgsql;
 DROP TRIGGER IF EXISTS contact_leads_updated_at ON contact_leads;
 CREATE TRIGGER contact_leads_updated_at
   BEFORE UPDATE ON contact_leads
+  FOR EACH ROW
+  EXECUTE FUNCTION set_updated_at();
+
+DROP TRIGGER IF EXISTS blog_posts_updated_at ON blog_posts;
+CREATE TRIGGER blog_posts_updated_at
+  BEFORE UPDATE ON blog_posts
   FOR EACH ROW
   EXECUTE FUNCTION set_updated_at();
