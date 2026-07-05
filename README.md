@@ -56,4 +56,6 @@ CORS_ORIGINS=https://anilaxsoftware.com,https://www.anilaxsoftware.com
 DOMAIN=anilaxsoftware.com
 ```
 
-See **`HOSTINGER.md`** for deploy steps.
+See **`HOSTINGER.md`** for Hostinger Node deploy.
+
+**VPS (full stack):** **`HOSTINGER-VPS.md`** — run `bash deploy/vps-setup.sh` on Ubuntu VPS.
